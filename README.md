@@ -6,7 +6,7 @@
 
 # Link Preview
 
-In this practice, I'm going to use LinkThumbnailer Rubygems to create a Link Preview App so that after the user add an link, the App can give you back an object containing images and website informations. Works like Facebook link previewer.           
+In this practice, I'm going to use LinkThumbnailer Rubygems to create a Link Preview App so that after the user add a link, the App can give you back an object containing images and website informations. Works like Facebook link previewer.           
 
 https://github.com/gottfrois/link_thumbnailer
 
@@ -129,11 +129,11 @@ end
 ```
 
 Let's create some views in `app/views/links`         
-1. _form.html.haml
-2. edit.html.haml
-3. index.html.haml
-4. new.html.haml
-5. show.html.haml
+1. _form.html.haml       
+2. edit.html.haml         
+3. index.html.haml         
+4. new.html.haml         
+5. show.html.haml        
 
 
 In `app/views/index.html.haml`, we loop through all of the links we added.
@@ -142,9 +142,9 @@ In `app/views/index.html.haml`, we loop through all of the links we added.
     %h2= link_to link.title, link
     %p= link_to link.link, link.link
 
-= link_to 'New Note', new_link_path
+= link_to 'New Link', new_link_path
 ```
-![image](https://github.com/TimingJL/links_preview/blob/master/pic/index.jpeg)
+![image](https://github.com/TimingJL/links_preview/blob/master/pic/index2.jpeg)
 
 
 And we define our form in the partial `app/views/_form.html.haml`.
@@ -152,6 +152,7 @@ And we define our form in the partial `app/views/_form.html.haml`.
 = simple_form_for @link do |f|
     = f.input :link
     = f.button :submit
+= link_to 'Cancel',  root_path 
 ```
 
 In `app/views/new.html.haml`
@@ -160,7 +161,7 @@ In `app/views/new.html.haml`
 
 = render 'form'
 ```
-![image](https://github.com/TimingJL/links_preview/blob/master/pic/new_page.jpeg)
+![image](https://github.com/TimingJL/links_preview/blob/master/pic/new2.jpeg)
 
 In `app/views/edit.html.haml`
 ```haml
