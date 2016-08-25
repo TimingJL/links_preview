@@ -199,4 +199,42 @@ After we add the link, we show up the details in the show page `app/views/show.h
 
 
 
+# Embed Responsive YouTube Video
+Next thing we wanna do is embed youtube video inside of our show page.         
+http://blog.41studio.com/embed-responsive-youtube-video-in-rails-4/         
+
+So we have to extract file name from user input.        
+In `app/view/links/show.html.haml`
+```haml
+%h1= @link.title
+%iframe{:src => "//www.youtube.com/embed/" + @link.link.split("=").last}
+%p
+	Link:
+	= @link.link
+%p
+	favicon:
+	= @link.favicon
+%p
+	Description:
+	= @link.description
+%p
+	= link_to 'Edit',  edit_link_path(@link)
+	= link_to 'Delete', link_path(@link), method: :delete, data: { confirm: 'Are you sure?' }
+	= link_to 'Home',  root_path
+```
+![image](https://github.com/TimingJL/links_preview/blob/master/pic/show_embed.jpeg)
+
+
+And we add the image to be a link to link to the show page.        
+In `app/views/links/index.html.haml`
+```haml
+- @links.each do |link|
+    %h2= link_to link.title, link   
+    %p= link_to (image_tag link.image, height: 100), link
+    %p= link_to link.link, link.link
+
+= link_to 'New Link', new_link_path
+```
+![image](https://github.com/TimingJL/links_preview/blob/master/pic/index_image.jpeg)
+
 To be continued...

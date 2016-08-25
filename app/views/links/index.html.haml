@@ -1,5 +1,6 @@
 - @links.each do |link|
-    %h2= link_to link.title, link
+    %h2= link_to link.title, link   
+    %p= link_to (image_tag link.image, height: 100), link
     %p= link_to link.link, link.link
 
 = link_to 'New Link', new_link_path

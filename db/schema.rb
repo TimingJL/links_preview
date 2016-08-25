@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160825091014) do
+ActiveRecord::Schema.define(version: 20160825133201) do
 
   create_table "links", force: :cascade do |t|
     t.string   "title"
@@ -18,8 +18,10 @@ ActiveRecord::Schema.define(version: 20160825091014) do
     t.string   "favicon"
     t.text     "description"
     t.string   "image"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.string   "youtube_embed_url"
+    t.string   "youtube_id"
   end
 
 end

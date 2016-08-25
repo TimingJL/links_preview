@@ -1,5 +1,5 @@
 %h1= @link.title
-	
+%iframe{:src => "//www.youtube.com/embed/" + @link.link.split("=").last}
 %p
 	Link:
 	= @link.link
@@ -10,9 +10,6 @@
 	Description:
 	= @link.description
 %p
-	Image URL:
-	= @link.image
-
-= link_to 'Edit',  edit_link_path(@link)
-= link_to 'Delete', link_path(@link), method: :delete, data: { confirm: 'Are you sure?' }
-= link_to 'Home',  root_path
+	= link_to 'Edit',  edit_link_path(@link)
+	= link_to 'Delete', link_path(@link), method: :delete, data: { confirm: 'Are you sure?' }
+	= link_to 'Home',  root_path
