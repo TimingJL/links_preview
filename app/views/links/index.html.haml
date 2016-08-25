@@ -1,1 +1,5 @@
-%h1 This is index.html.haml
+- @links.each do |link|
+    %h2= link_to link.title, link
+    %p= link_to link.link, link.link
+
+= link_to 'New Note', new_link_path
