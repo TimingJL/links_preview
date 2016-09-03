@@ -6,7 +6,8 @@
 
 # Link Preview
 
-In this practice, I'm going to use LinkThumbnailer Rubygems to create a Link Preview App so that after the user add a link, the App can give you back an object containing images and website informations. Works like Facebook link previewer.           
+In this practice, I'm going to use LinkThumbnailer Rubygems to create a Link Preview App so that after the user add a link, the App can give you back an object containing images and website informations.            
+
 
 https://github.com/gottfrois/link_thumbnailer
 
@@ -236,5 +237,101 @@ In `app/views/links/index.html.haml`
 = link_to 'New Link', new_link_path
 ```
 ![image](https://github.com/TimingJL/links_preview/blob/master/pic/index_image.jpeg)
+
+
+# Basic Styling
+
+### Masonry
+Masonry is a light-weight layout framework which wraps AutoLayout with a nicer syntax.          
+
+https://github.com/kristianmandrup/masonry-rails        
+
+Let's go to our Gemfile, we need a gem called masonry-rails.            
+In Gemfile, we add this line, run bundle install and restart the server.
+```console
+gem 'masonry-rails', '~> 0.2.1'
+```
+
+In app/assets/javascripts/application.js, under jquery, we add `//= require masonry/jquery.masonry`
+```js
+//= require jquery
+//= require jquery_ujs
+//= require masonry/jquery.masonry
+//= require turbolinks
+//= require_tree .
+```
+
+To get this work, I'm going to add some styling and coffescript. In app/assets/javascripts/pin.coffee
+```coffee
+$ ->
+  $('#links').imagesLoaded ->
+    $('#links').masonry
+      itemSelector: '.box'
+      isFitWidth: true
+```
+
+And in `app/assets/stylesheets/application.css.scss`
+```scss
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any other CSS/SCSS
+ * files in this directory. Styles in this file should be added after the last require_* statement.
+ * It is generally better to create a new file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+
+#links {
+  margin: 0 auto;
+  width: 100%;
+  .box {
+      margin: 10px;
+      width: 350px;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.22);
+      border-radius: 7px;
+      text-align: center;
+      text-decoration:none;
+      img {
+        max-width: 100%;
+        height: 200px;
+      }
+      h2 {
+        font-size: 22px;
+        margin: 0;
+        padding: 20px 10px;
+        a {
+                color: #474747;
+                text-decoration:none;
+        }
+      }
+    }
+}
+
+textarea {
+    min-height: 250px;
+}
+```
+
+And in `app/views/links/index.html.haml`
+```haml
+#links.transitions-enabled
+    - @links.each do |link|
+        .box.panel.panel-default
+            - if link.image.present?
+                =link_to (image_tag link.image, width: '100%'), link
+            - else
+                =link_to link.title, link
+            .panel-body
+                %h2= link_to link.title, link
+=link_to "New", new_link_path, class: "btn btn-default"
+```
+![image](https://github.com/TimingJL/links_preview/blob/master/pic/masonry.jpeg)
 
 To be continued...
