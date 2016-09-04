@@ -12,6 +12,8 @@ In this practice, I'm going to use LinkThumbnailer Rubygems to create a Link Pre
 https://github.com/gottfrois/link_thumbnailer
 
 
+![image](https://github.com/TimingJL/links_preview/blob/master/pic/show_styling.jpeg)
+
 
 
 # Create a App
@@ -455,6 +457,72 @@ And in `app/views/links/show.html.haml`, we tweak the code to the following
                 = link_to "Delete", link_path, method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-default"
 ```
 ![image](https://github.com/TimingJL/links_preview/blob/master/pic/show_styling.jpeg)
+
+### Form Styling
+In `app/assets/stylesheets/application.css.scss`, we add
+```scss
+.input {
+    width: 100%;
+    font-size: 28px;
+    margin: 0px 8;
+    box-sizing: border-box;
+}
+.button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 10px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    width:100%;
+}
+.center{
+  margin: 0px auto;
+  text-align: center;
+}
+h1 {
+    font-size: 36px;
+    font-weight: normal;
+    color: #4CAF50;
+}
+```
+
+In `app/views/links/_form.html.haml`
+```haml
+= simple_form_for @link do |f|
+    = f.input :link, input_html: { class: 'input' }
+    = f.button :submit, class: ".button"
+%br
+= link_to 'Cancel',  root_path, class: "btn btn-default add-button"
+```
+
+In `app/views/links/edit.haml`
+```haml
+#link_show.row
+    .col-md-8.col-md-offset-2
+        .panel.panel-default
+            .panel-body
+                %h1.center Edit Link
+
+                = render 'form'
+```
+
+
+In `app/views/links/new.haml`
+```haml
+#link_show.row
+    .col-md-8.col-md-offset-2
+        .panel.panel-default
+            .panel-body
+                %h1.center Add New Link
+
+                = render 'form'
+```
+![image](https://github.com/TimingJL/links_preview/blob/master/pic/styling_form.jpeg)
+
+
 
 
 To be continued...

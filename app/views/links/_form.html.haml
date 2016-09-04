@@ -1,4 +1,5 @@
 = simple_form_for @link do |f|
-    = f.input :link
-    = f.button :submit
-= link_to 'Cancel',  root_path
+	= f.input :link, input_html: { class: 'input' }
+	= f.button :submit, class: ".button"
+%br
+= link_to 'Cancel',  root_path, class: "btn btn-default add-button"
