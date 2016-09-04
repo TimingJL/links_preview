@@ -47,3 +47,33 @@ textarea {
 }
 
 
+#link_show {
+    .link_image {
+        img {
+            max-width: 100%;
+            width: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+    }
+    .panel-body {
+        padding: 35px;
+        h1 {
+            margin: 0 0 10px 0;
+        }
+        .description {
+            color: #868686;
+            line-height: 1.75;
+            margin: 0;
+        }
+    }
+    .panel-footer {
+        padding: 20px 35px;
+        p {
+            margin: 0;
+        }
+        .user {
+            padding-top: 8px;
+        }
+    }  
+}

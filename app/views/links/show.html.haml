@@ -1,15 +1,10 @@
-%h1= @link.title
-%iframe{:src => "//www.youtube.com/embed/" + @link.link.split("=").last}
-%p
-	Link:
-	= @link.link
-%p
-	favicon:
-	= @link.favicon
-%p
-	Description:
-	= @link.description
-%p
-	= link_to 'Edit',  edit_link_path(@link)
-	= link_to 'Delete', link_path(@link), method: :delete, data: { confirm: 'Are you sure?' }
-	= link_to 'Home',  root_path
+#link_show.row
+    .col-md-8.col-md-offset-2
+        .panel.panel-default
+            %iframe{:frameborder => "0",:height => "400", :width => "100%", :src => "//www.youtube.com/embed/" + @link.link.split("=").last}
+            .panel-body
+                %h1= @link.title
+                %p.description= @link.description
+            .panel-footer
+                = link_to "Edit", edit_link_path, class: "btn btn-default"
+                = link_to "Delete", link_path, method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-default"

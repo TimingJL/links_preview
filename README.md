@@ -405,4 +405,56 @@ And in `app/views/links/index.html.haml`, we remove the following code because i
 ```
 ![image](https://github.com/TimingJL/links_preview/blob/master/pic/navbar.jpeg)
 
+
+### Show Page Styling
+In `app/assets/stylesheets/application.css.scss`, we add
+```scss
+#link_show {
+    .link_image {
+        img {
+            max-width: 100%;
+            width: 100%;
+            display: block;
+            margin: 0 auto;
+        }
+    }
+    .panel-body {
+        padding: 35px;
+        h1 {
+            margin: 0 0 10px 0;
+        }
+        .description {
+            color: #868686;
+            line-height: 1.75;
+            margin: 0;
+        }
+    }
+    .panel-footer {
+        padding: 20px 35px;
+        p {
+            margin: 0;
+        }
+        .user {
+            padding-top: 8px;
+        }
+    }  
+}
+```
+
+And in `app/views/links/show.html.haml`, we tweak the code to the following
+```haml
+#link_show.row
+    .col-md-8.col-md-offset-2
+        .panel.panel-default
+            %iframe{:frameborder => "0",:height => "400", :width => "100%", :src => "//www.youtube.com/embed/" + @link.link.split("=").last}
+            .panel-body
+                %h1= @link.title
+                %p.description= @link.description
+            .panel-footer
+                = link_to "Edit", edit_link_path, class: "btn btn-default"
+                = link_to "Delete", link_path, method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-default"
+```
+![image](https://github.com/TimingJL/links_preview/blob/master/pic/show_styling.jpeg)
+
+
 To be continued...
