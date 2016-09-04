@@ -334,4 +334,75 @@ And in `app/views/links/index.html.haml`
 ```
 ![image](https://github.com/TimingJL/links_preview/blob/master/pic/masonry.jpeg)
 
+
+### Bootstrap Setup
+We need to rename the `application.css` to `application.css.scss`, and import bootstrap styles in `app/assets/stylesheets/application.css.scss`
+```scss
+@import "bootstrap-sprockets";
+@import "bootstrap";
+```
+
+And we need to require bootstrap-sprockets within the `app/assets/javascripts/application.js`
+```js
+//= require jquery
+//= require bootstrap-sprockets
+```
+
+### Bootstrap RWD Navbar
+https://getbootstrap.com/components/#navbar            
+
+We need to rename the `application.html.erb` to `application.html.haml` in `app/views/layouts` and tweak the code to
+```haml
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title LinksPreview
+    = csrf_meta_tags
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+  %body
+    %nav.navbar.navbar-inverse
+      .container-fluid
+        / Brand and toggle get grouped for better mobile display
+        .navbar-header
+          %button.navbar-toggle.collapsed{"aria-expanded" => "false", "data-target" => "#bs-example-navbar-collapse-1", "data-toggle" => "collapse", :type => "button"}
+            %span.sr-only Toggle navigation
+            %span.icon-bar
+            %span.icon-bar
+            %span.icon-bar
+          %a.navbar-brand{:href => root_path} Home
+        / Collect the nav links, forms, and other content for toggling
+        #bs-example-navbar-collapse-1.collapse.navbar-collapse
+          %form.navbar-form.navbar-left
+            .form-group
+              %input.form-control{:placeholder => "Search", :type => "text"}/
+            %button.btn.btn-default{:type => "submit"} Submit
+          %ul.nav.navbar-nav.navbar-right
+            %li
+              %a{:href => new_link_path} New
+            %li.dropdown
+              %a.dropdown-toggle{"aria-expanded" => "false", "aria-haspopup" => "true", "data-toggle" => "dropdown", :href => "#", :role => "button"}
+                %span.glyphicon.glyphicon-cog{"aria-hidden" => "true"}
+              %ul.dropdown-menu
+                %li
+                  %a{:href => "#"} Log In
+                %li
+                  %a{:href => "#"} Edit
+                %li
+                  %a{:href => "#"} Sign Up
+                %li.divider{:role => "separator"}
+                %li
+                  %a{:href => "#"} Log Out
+        / /.navbar-collapse
+      / /.container-fluid
+    = yield
+```
+
+And in `app/views/links/index.html.haml`, we remove the following code because it has exited in navbar.
+```haml
+=link_to "New", new_link_path, class: "btn btn-default"
+```
+![image](https://github.com/TimingJL/links_preview/blob/master/pic/navbar.jpeg)
+
 To be continued...
