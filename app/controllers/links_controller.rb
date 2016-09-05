@@ -1,6 +1,12 @@
 class LinksController < ApplicationController
     before_action :find_link, only: [:show, :edit, :update, :destroy]
 
+    def search
+        query = params[:search].presence || "*"
+        @links = Link.search(query, fields: [:title, :description], highlight: {tag: "<strong>"})
+        #@links = Link.search(params[:search])
+    end
+
     def index
         @links = Link.all.order("created_at DESC")
     end

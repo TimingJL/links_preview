@@ -10,6 +10,7 @@
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
+ *= require 'masonry/transitions'
  *= require_tree .
  *= require_self
  */
@@ -103,4 +104,9 @@ h1 {
     font-size: 36px;
     font-weight: normal;
     color: #4CAF50;
+}
+
+strong { 
+    color: red;
+    background-color: yellow;
 }

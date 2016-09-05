@@ -286,6 +286,7 @@ And in `app/assets/stylesheets/application.css.scss`
  * files in this directory. Styles in this file should be added after the last require_* statement.
  * It is generally better to create a new file per style scope.
  *
+ *= require 'masonry/transitions'
  *= require_tree .
  *= require_self
  */
@@ -376,10 +377,13 @@ We need to rename the `application.html.erb` to `application.html.haml` in `app/
           %a.navbar-brand{:href => root_path} Home
         / Collect the nav links, forms, and other content for toggling
         #bs-example-navbar-collapse-1.collapse.navbar-collapse
-          %form.navbar-form.navbar-left
-            .form-group
-              %input.form-control{:placeholder => "Search", :type => "text"}/
-            %button.btn.btn-default{:type => "submit"} Submit
+          %ul.nav.navbar-nav.navbar-left
+            = form_tag search_links_path, method: :get, class: "navbar-form", role: "search" do
+              .input-group
+                = text_field_tag :search, params[:search], class: "form-control",:placeholder => "Search"  
+                %span.input-group-btn
+                  %button.btn.btn-default{:type => "submit"} 
+                    %span.glyphicon.glyphicon-search   
           %ul.nav.navbar-nav.navbar-right
             %li
               %a{:href => new_link_path} New
@@ -446,9 +450,9 @@ In `app/assets/stylesheets/application.css.scss`, we add
 And in `app/views/links/show.html.haml`, we tweak the code to the following
 ```haml
 #link_show.row
-    .col-md-8.col-md-offset-2
+    .col-md-6.col-md-offset-3
         .panel.panel-default
-            %iframe{:frameborder => "0",:height => "400", :width => "100%", :src => "//www.youtube.com/embed/" + @link.link.split("=").last}
+            %iframe{:frameborder => "0",:height => "510", :width => "100%", :src => "//www.youtube.com/embed/" + @link.link.split("=").last}
             .panel-body
                 %h1= @link.title
                 %p.description= @link.description
@@ -522,6 +526,147 @@ In `app/views/links/new.haml`
 ```
 ![image](https://github.com/TimingJL/links_preview/blob/master/pic/styling_form.jpeg)
 
+
+# Search
+We're going to use a gem called searchkick.             
+https://github.com/ankane/searchkick
+
+### How To Install and Configure Elasticsearch on Ubuntu 16.04
+https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-logstash-and-kibana-elk-stack-on-ubuntu-16-04 https://www.digitalocean.com/community/tutorials/how-to-install-and-configure-elasticsearch-on-ubuntu-16-04           
+
+To do so, we gonna need java.
+```
+# Add the Oracle Java PPA to apt:
+$ sudo add-apt-repository -y ppa:webupd8team/java
+
+# Update your apt package database:
+$ sudo apt-get update
+
+# Install the latest stable version of Oracle Java 8 with this command (and accept the license agreement that pops up):
+$ sudo apt-get -y install oracle-java8-installer
+```
+
+Next thing we need to do is install elasticsearch.
+```
+# Elasticsearch can be installed with a package manager by adding Elastic's package source list.
+# Run the following command to import the Elasticsearch public GPG key into apt:
+$ wget -qO - https://packages.elastic.co/GPG-KEY-elasticsearch | sudo apt-key add -
+
+# Create the Elasticsearch source list:
+$ echo "deb http://packages.elastic.co/elasticsearch/2.x/debian stable main" | sudo tee -a /etc/apt/sources.list.d/elasticsearch-2.x.list
+
+# Update the apt package database again:
+$ sudo apt-get update
+
+# Install Elasticsearch with this command:
+$ sudo apt-get -y install elasticsearch
+
+# Elasticsearch is now installed. Let's edit the configuration:
+$ sudo vim /etc/elasticsearch/elasticsearch.yml
+
+# In /etc/elasticsearch/elasticsearch.yml excerpt (updated)
+$ network.host: localhost
+
+# Now, start Elasticsearch:
+$ sudo systemctl restart elasticsearch
+
+# Then, run the following command to start Elasticsearch on boot up:
+$ sudo systemctl daemon-reload
+$ sudo systemctl enable elasticsearch
+```
+After installing and loading Elasticsearch, You go to `http://localhost:9200/`, it should print out:              
+```
+{
+  "name" : "Plug",
+  "cluster_name" : "elasticsearch",
+  "version" : {
+    "number" : "2.3.5",
+    "build_hash" : "90f439ff60a3c0f497f91663701e64ccd01edbb4",
+    "build_timestamp" : "2016-07-27T10:36:52Z",
+    "build_snapshot" : false,
+    "lucene_version" : "5.5.0"
+  },
+  "tagline" : "You Know, for Search"
+}
+```
+That will confirm that is installed correctly.
+
+### Searchkick
+Then we need to install `searchkick` gems and restart the server. So in our `Gemfile`, we add:
+```
+gem 'searchkick', '~> 0.7.1'
+```
+Note:          
+Error when reindexing after upgrade to 0.8.2. Downgrading to 0.7.1 "fixed" the problem.         
+
+Then we need to add the line searchkick to our link's model.         
+In `app/models/link.rb`
+```ruby
+class Link < ApplicationRecord
+    validates :link, presence: true
+    searchkick highlight: [:title, :description]
+end
+```
+
+Next, we need to load reindex all of the links from our database.
+```console
+$ rake searchkick:reindex CLASS=Link
+```
+
+Next, we need to add a route for our search.          
+In `config/routes.rb`
+```ruby
+Rails.application.routes.draw do
+    resources :links do
+        collection do
+            get 'search'
+        end
+    end
+
+  root 'links#index'
+end
+```
+Now, we need to add a search method within our controller.          
+In `app/controllers/links_controller.rb`
+```ruby
+
+    def search
+        query = params[:search].presence || "*"
+        @links = Post.search(query, fields: [:title, :description], highlight: {tag: "<strong>"})
+    end
+```
+
+In `app/assets/stylesheets/application.css.scss`, we add the following css for highlight
+```scss
+strong { 
+    color: red;
+    background-color: yellow;
+}
+```
+
+Then we need to create a view for our search. So under `app/views/links/`, we create a new file and save it as `search.html.haml`
+```haml
+#links.transitions-enabled
+    - @links.with_details.each do |link, details|
+        .box.panel.panel-default
+            - if link.image.present?
+                =link_to (image_tag link.image, width: '100%'), link
+            - else
+                %h2= link_to simple_format(details[:highlight][:title]), link
+            .panel-body
+                -if !details[:highlight][:title].present?
+                    %h2= link_to link.title, link
+                -else
+                    %h2= link_to simple_format(details[:highlight][:title]), link
+            .panel-footer
+                -if !details[:highlight][:description].present?
+                -else
+                    %p= link_to simple_format(details[:highlight][:description]), link
+```
+![image](https://github.com/TimingJL/links_preview/blob/master/pic/searchkick.jpeg)
+
+Note:         
+Remember to add `simple_format`, or the html highlight tag might not work.         
 
 
 

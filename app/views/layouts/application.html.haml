@@ -19,10 +19,13 @@
           %a.navbar-brand{:href => root_path} Home
         / Collect the nav links, forms, and other content for toggling
         #bs-example-navbar-collapse-1.collapse.navbar-collapse
-          %form.navbar-form.navbar-left
-            .form-group
-              %input.form-control{:placeholder => "Search", :type => "text"}/
-            %button.btn.btn-default{:type => "submit"} Submit
+          %ul.nav.navbar-nav.navbar-left
+            = form_tag search_links_path, method: :get, class: "navbar-form", role: "search" do
+              .input-group
+                = text_field_tag :search, params[:search], class: "form-control",:placeholder => "Search"  
+                %span.input-group-btn
+                  %button.btn.btn-default{:type => "submit"} 
+                    %span.glyphicon.glyphicon-search   
           %ul.nav.navbar-nav.navbar-right
             %li
               %a{:href => new_link_path} New

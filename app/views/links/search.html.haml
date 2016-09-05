@@ -1,0 +1,16 @@
+#links.transitions-enabled
+	- @links.with_details.each do |link, details|
+		.box.panel.panel-default
+			- if link.image.present?
+				=link_to (image_tag link.image, width: '100%'), link
+			- else
+				%h2= link_to simple_format(details[:highlight][:title]), link
+			.panel-body
+				-if !details[:highlight][:title].present?
+					%h2= link_to link.title, link
+				-else
+					%h2= link_to simple_format(details[:highlight][:title]), link
+			.panel-footer
+				-if !details[:highlight][:description].present?
+				-else
+					%p= link_to simple_format(details[:highlight][:description]), link
